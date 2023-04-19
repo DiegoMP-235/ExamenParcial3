@@ -30,3 +30,46 @@ class FuncionesBD:
             messagebox.showinfo("Exito","Se inserto correctamente") 
         except sqlite3.OperationalError as e:    
             messagebox.showerror("Error!","Ha ocurrido un error:"+str(e))
+            
+    def consultaPedimento(self,Aduana):
+        Conexion = self.__conectaBD()
+        try:
+            Cursor = Conexion.cursor()
+            Datos = [Aduana]
+            SQL = "SELECT * FROM TBPedimentos WHERE Aduana = ?"
+            Cursor.execute(SQL,Datos) #Lanzamos la consulta
+            ResultadosCons = Cursor.fetchall() #Guardamos los resultados de la consulta
+            Conexion.close()
+            return ResultadosCons 
+        except sqlite3.OperationalError as e:
+            messagebox.showerror("Error!","Ha ocurrido un error:"+str(e))      
+            
+    def eliminaPedimento(self,ID):
+        Conexion = self.__conectaBD()
+        try:
+            Cursor = Conexion.cursor()
+            Datos = [ID]
+            SQL = "DELETE FROM TBPedimentos WHERE IDExpo = ?"
+            Cursor.execute(SQL,Datos) #Lanzamos la consulta
+            Conexion.commit()
+            Conexion.close()
+            messagebox.showinfo("Exito","Se Elimino correctamente") 
+        except sqlite3.OperationalError as e:
+            messagebox.showerror("Error!","Ha ocurrido un error:"+str(e)) 
+            
+    def consultadUno(self,ID):                  
+        Conexion = self.__conectaBD()
+        #Verificamos que el ID no este vacio      
+        if(ID == ""):
+            messagebox.showwarning("Aviso!","Por favor completa el campo")  
+            Conexion.close()
+        else: #Procedemos a realizar la consulta
+            try:
+                Cursor = Conexion.cursor()
+                SQL = "SELECT * FROM TBPedimentos WHERE IDExpo="+ID
+                Cursor.execute(SQL) #Lanzamos la consulta
+                ResultadosCons = Cursor.fetchall() #Guardamos los resultados de la consulta
+                Conexion.close()
+                return ResultadosCons 
+            except sqlite3.OperationalError:
+                print("Ha occurido un error en la consulta")  
